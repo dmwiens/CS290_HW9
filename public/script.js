@@ -2,10 +2,54 @@
 
 // When loaded bind the Forms' Submit buttons
 document.addEventListener('DOMContentLoaded', bindSubmitButtons);
-
+document.addEventListener('DOMContentLoaded', intialBuild);
 
 function buildTable(){
-	console.log("placeholder: building table..."); // fixme
+
+
+	console.log("building table..."); // fixme
+
+	var req = new XMLHttpRequest();
+	req.open("POST", "/getTable", true);
+	req.setRequestHeader('Content-Type', 'application/json');
+
+	req.addEventListener('load',function(){
+		if (req.status >= 200 && req.status < 400){
+			console.log('getTable POST Successful.');
+			constructRows(JSON.parse(req.response));
+		} 
+		else {
+			console.log("getTable POST unsuccessful. Request Status: " + req.status);
+		}
+	});
+
+
+	function constructRows(rows){
+
+		// first clear children
+		var tbody = document.getElementById("workoutTableBody");
+		tbody.innerHTML = '';
+
+		for (var r in rows) {
+
+			var newRow = document.createElement("tr");
+
+			for (var c in rows[r]){
+				var newCell = document.createElement("td");
+				//var colID = col + 1;
+				//newCell.id = rowID + "," + colID; // e.g cell 2,3 has id "2,3"
+				newCell.textContent = rows[r][c];
+				newRow.appendChild(newCell);
+			}
+
+			document.getElementById("workoutTableBody").appendChild(newRow);
+		}
+	}
+
+
+	//req.send(JSON.stringify(postInput));
+	req.send();
+	event.preventDefault();
 }
 
 // This function binds the submit buttons to make calls to APIs and populate the HTML result
@@ -20,8 +64,10 @@ function bindSubmitButtons(){
 			// build post data for new entry
 			var postInput = {};
 			postInput.name = document.getElementById("newEntryName").value;
-			postInput.done = document.getElementById("newEntryDone").checked;
-			postInput.due = document.getElementById("newEntryDueDate").value;
+			postInput.reps = document.getElementById("newEntryReps").value;
+			postInput.weight = document.getElementById("newEntryWeight").value;
+			postInput.date = document.getElementById("newEntryDate").value;
+			postInput.lbs = document.getElementById("newEntryLbs").checked;
 
 			//https://piazza.com/class/jbu2ol8jlbl3iu?cid=253
 			var req = new XMLHttpRequest();
@@ -30,6 +76,7 @@ function bindSubmitButtons(){
 
 			req.addEventListener('load',function(){
 				if (req.status >= 200 && req.status < 400){
+					console.log('New Entry POST Successful.');
 					buildTable();
 					} 
 				else {
@@ -37,8 +84,8 @@ function bindSubmitButtons(){
 					}
 				});
 
-			req.send(postTextInput);
 
+			req.send(JSON.stringify(postInput));
 			event.preventDefault();
 
 		} else {
@@ -47,4 +94,12 @@ function bindSubmitButtons(){
 
         })
 
+}
+
+
+
+// This function calls the buildTable function once the DOM is loaded
+function intialBuild(){
+	console.log("initial build...")
+	buildTable();
 }

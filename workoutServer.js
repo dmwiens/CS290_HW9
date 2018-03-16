@@ -93,20 +93,6 @@ app.get('/safe-update',function(req,res,next){
   });
 });
 
-app.get('/reset-table',function(req,res,next){
-  var context = {};
-  mysql.pool.query("DROP TABLE IF EXISTS workouts", function(err){
-    var createString = "CREATE TABLE workouts(" +
-    "id INT PRIMARY KEY AUTO_INCREMENT," +
-    "name VARCHAR(255) NOT NULL," +
-    "done BOOLEAN," +
-    "due DATE)";
-    mysql.pool.query(createString, function(err){
-      context.results = "Table reset";
-      res.render('home',context);
-    })
-  });
-});
 
 app.get('/reset-table',function(req,res,next){
   var context = {};
@@ -127,10 +113,28 @@ app.get('/reset-table',function(req,res,next){
 
 
 // POST handler
-app.post('/newentry', function(req,res){
-
-  console.log(req.body);
+app.post('/newEntry', function(req,res,next){
   
+  mysql.pool.query("INSERT INTO workouts(`name`, `reps`, `weight`, `date`, `lbs`) VALUES (?, ?, ?, ?, ?)", [req.body["name"], req.body["reps"], req.body["weight"], req.body["date"], req.body["lbs"]], function(err, result){
+    if(err){
+      next(err);
+      return;
+    }
+    console.log("Entry successful");
+    res.status(200).send('OK');
+  });
+});
+
+
+app.post('/getTable',function(req,res,next){
+  
+  mysql.pool.query('SELECT * FROM workouts', function(err, rows, fields){
+    if (err){
+      next(err);
+      return;
+    }
+    res.status(200).send(JSON.stringify(rows));
+  });
 });
 
 

@@ -5,15 +5,41 @@
 			<input type="text" id="newEntryName" required="true">
 		</label>
 		<br>
-		<label>Done?:  
-			<input type="checkbox" id="newEntryDone">
+		<label>Reps: 
+			<input type="number" id="newEntryReps">
 		</label>
 		<br>
-		<label>Due Date: 
-			<input type="date" id="newEntryDueDate">
+		<label>Weight: 
+			<input type="number" id="newEntryWeight">
+		</label>
+		<br>
+		<label>Date: 
+			<input type="date" id="newEntryDate">
+		</label>
+		<br>
+		<label>Lbs?:  
+			<input type="checkbox" id="newEntryLbs">
 		</label>
 		<br>
 		<input id="newEntrySubmit" type="submit" value="Submit Workout" />
 	</fieldset>
 </form>
 <h1>Current workout entries</h1>
+
+<table id="workoutTable">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Reps</th>
+			<th>Weight</th>
+			<th>Date</th>
+			<th>Lbs</th>
+			<th>Edit</th>
+			<th>Delete</th>
+		</tr>
+	</thead>
+	<tbody id="workoutTableBody">
+		
+	</tbody>
+</table>
