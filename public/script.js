@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', intialBuild);
 
 function buildTable(){
 
-
 	console.log("building table..."); // fixme
 
 	var req = new XMLHttpRequest();
@@ -32,6 +31,7 @@ function buildTable(){
 
 		for (var r in rows) {
 
+			//console.log(rows[r]["id"]);
 			var newRow = document.createElement("tr");
 
 			for (var c in rows[r]){
@@ -41,6 +41,82 @@ function buildTable(){
 				newCell.textContent = rows[r][c];
 				newRow.appendChild(newCell);
 			}
+
+			// Edit button
+			var editCell = document.createElement("td");
+			var editCellForm = document.createElement("form");
+			var editCellFormSubmit = document.createElement("input");
+			editCellFormSubmit.type = "submit";
+			editCellFormSubmit.value="EDIT";
+			editCellFormSubmit.addEventListener('click', generateEdit(rows[r]["id"]));
+			editCellForm.appendChild(editCellFormSubmit);
+			editCell.appendChild(editCellForm);
+			newRow.appendChild(editCell);
+
+			// Closure reference: http://classes.engr.oregonstate.edu/eecs/fall2015/cs290-400/content/core-content/js-functions-objects/js-scope-context.html
+			function generateEdit(id){
+				return function(x){
+					return function(event){
+						console.log("Entry " + x + " edited...");
+
+						// build post data for edit request
+						var postInput= {};
+						postInput.id = x;
+						
+						//https://piazza.com/class/jbu2ol8jlbl3iu?cid=253
+						var req = new XMLHttpRequest();
+						req.open("POST", "/editEntry", true);
+						req.setRequestHeader('Content-Type', 'application/json');
+
+						req.send(JSON.stringify(postInput));
+						event.preventDefault();
+					}
+				}(id);
+			}
+
+
+			// Delete button
+			var newCell = document.createElement("td");
+			var newCellForm = document.createElement("form");
+			var newCellFormSubmit = document.createElement("input");
+			newCellFormSubmit.type = "submit";
+			newCellFormSubmit.value="DELETE";
+			newCellFormSubmit.addEventListener('click', generateDelete(rows[r]["id"]));
+			newCellForm.appendChild(newCellFormSubmit);
+			newCell.appendChild(newCellForm);
+			newRow.appendChild(newCell);
+
+			// Closure reference: http://classes.engr.oregonstate.edu/eecs/fall2015/cs290-400/content/core-content/js-functions-objects/js-scope-context.html
+			function generateDelete(id){
+				return function(x){
+					return function(event){
+						console.log("Entry " + x + " deleted...");
+
+						// build post data for deletion
+						var postInput = {};
+						postInput.id = x;
+
+						//https://piazza.com/class/jbu2ol8jlbl3iu?cid=253
+						var req = new XMLHttpRequest();
+						req.open("POST", "/deleteEntry", true);
+						req.setRequestHeader('Content-Type', 'application/json');
+
+						req.addEventListener('load',function(){
+							if (req.status >= 200 && req.status < 400){
+								console.log('FE: Delete Successful. Now build table...');
+								buildTable();
+								} 
+							else {
+								console.log("FE: Delete unsuccessful. Request Status: " + req.status);
+								}
+							});
+
+						req.send(JSON.stringify(postInput));
+						event.preventDefault();
+					}
+				}(id);
+			}
+
 
 			document.getElementById("workoutTableBody").appendChild(newRow);
 		}

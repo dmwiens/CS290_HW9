@@ -126,8 +126,32 @@ app.post('/newEntry', function(req,res,next){
 });
 
 
+app.post('/deleteEntry', function(req,res,next){
+
+  //mysql.pool.query("DELETE FROM workouts WHERE id=?", [4], function(err, result){
+  mysql.pool.query("DELETE FROM workouts WHERE id=?", [req.body["id"]], function(err, result){
+    if(err){
+      next(err);
+      return;
+    }
+    console.log("Delete successful");
+    res.status(200).send('OK');
+  });
+});
+
+
+app.post('/editEntry', function(req,res,next){
+
+  console.log("SVR: editing " + req.body["id"]);
+
+});
+
+
+
+
+
 app.post('/getTable',function(req,res,next){
-  
+
   mysql.pool.query('SELECT * FROM workouts', function(err, rows, fields){
     if (err){
       next(err);
