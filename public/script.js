@@ -142,15 +142,15 @@ function buildTable(){
 
 		for (var r in rows) {
 
-			console.log(rows[r]);
 			var newRow = document.createElement("tr");
-
+			console.log(rows[r])
 			for (var c in rows[r]){
-				var newCell = document.createElement("td");
-				//var colID = col + 1;
-				//newCell.id = rowID + "," + colID; // e.g cell 2,3 has id "2,3"
-				newCell.textContent = rows[r][c];
-				newRow.appendChild(newCell);
+				if (c != "id"){
+					var newCell = document.createElement("td");
+					newCell.textContent = rows[r][c];
+					newRow.appendChild(newCell);
+				}
+				
 			}
 
 			// Edit button

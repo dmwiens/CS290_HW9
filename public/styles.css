@@ -1,0 +1,19 @@
+
+table {
+    border: 1px solid black;
+ }
+
+th, td {
+    border: 1px solid black;
+    padding-left: 1em;
+    padding-right: 1em;
+ }
+
+thead th {
+    font-weight: bold;
+}
+
+tbody th {
+    font-style: italic;
+    font-weight: normal;
+}
