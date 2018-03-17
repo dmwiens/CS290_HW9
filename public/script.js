@@ -4,6 +4,106 @@
 document.addEventListener('DOMContentLoaded', bindSubmitButtons);
 document.addEventListener('DOMContentLoaded', intialBuild);
 
+function addEditForm(id, name, reps, weight, date, lbs){
+
+	// first clear children
+	var editDiv = document.getElementById("editDiv");
+	editDiv.innerHTML = '';
+
+	var newForm = document.createElement("form");
+
+	var nameLabel = document.createElement("label");
+	nameLabel.textContent = "Name: "
+	var nameInput = document.createElement("input");
+	nameInput.type = "text"
+	nameInput.required = "true"
+	nameInput.value = name;
+	nameInput.id = "nameInput"
+	nameLabel.appendChild(nameInput);
+	newForm.appendChild(nameLabel);
+
+	var repsLabel = document.createElement("label");
+	repsLabel.textContent = "Reps: "
+	var repsInput = document.createElement("input");
+	repsInput.type = "number"
+	repsInput.value = reps;
+	repsInput.id = "repsInput"
+	repsLabel.appendChild(repsInput);
+	newForm.appendChild(repsLabel);
+
+	var weightLabel = document.createElement("label");
+	weightLabel.textContent = "Weight: "
+	var weightInput = document.createElement("input");
+	weightInput.type = "number"
+	weightInput.value = weight;
+	weightInput.id = "weightInput"
+	weightLabel.appendChild(weightInput);
+	newForm.appendChild(weightLabel);
+
+	var dateLabel = document.createElement("label");
+	dateLabel.textContent = "Date: "
+	var dateInput = document.createElement("input");
+	dateInput.type = "date"
+	//dateInput.value = date;
+	var dateMod = date.slice(0, date.indexOf("T"));
+	dateInput.value = dateMod
+	dateInput.id = "dateInput"
+	dateLabel.appendChild(dateInput);
+	newForm.appendChild(dateLabel);
+
+	var lbsLabel = document.createElement("label");
+	lbsLabel.textContent = "lbs: "
+	var lbsInput = document.createElement("input");
+	lbsInput.type = "checkbox"
+	lbsInput.checkbox = lbs;
+	lbsInput.id = "lbsInput"
+	lbsLabel.appendChild(lbsInput);
+	newForm.appendChild(lbsLabel);
+
+	var newSubmit = document.createElement("input");
+	newSubmit.type = "submit";
+	newSubmit.value = "Submit Edits";
+	newSubmit.id = "submitEdit";
+	newSubmit.addEventListener('click', function(event){
+		console.log("Edit Submit Pressed!");
+
+		// build post data for edit entry
+		var postInput = {};
+		postInput.id = id
+		postInput.name = document.getElementById("nameInput").value;
+		postInput.reps = document.getElementById("repsInput").value;
+		postInput.weight = document.getElementById("weightInput").value;
+		postInput.date = document.getElementById("dateInput").value;
+		postInput.lbs = document.getElementById("lbsInput").checked;
+
+		//https://piazza.com/class/jbu2ol8jlbl3iu?cid=253
+		var req = new XMLHttpRequest();
+		req.open("POST", "/editEntry", true);
+		req.setRequestHeader('Content-Type', 'application/json');
+
+		req.addEventListener('load',function(){
+			if (req.status >= 200 && req.status < 400){
+				console.log('Edit POST Successful.');
+				buildTable();
+				} 
+			else {
+				console.log("Edit POST unsuccessful. Request Status: " + req.status);
+				}
+			});
+
+
+		req.send(JSON.stringify(postInput));
+
+		event.preventDefault();
+	})
+
+	newForm.appendChild(newSubmit);
+
+
+	document.getElementById("editDiv").appendChild(newForm);
+}
+
+
 function buildTable(){
 
 	console.log("building table..."); // fixme
@@ -16,6 +116,7 @@ function buildTable(){
 		if (req.status >= 200 && req.status < 400){
 			console.log('getTable POST Successful.');
 			constructRows(JSON.parse(req.response));
+			document.getElementById("editDiv").innerHTML ="";
 		} 
 		else {
 			console.log("getTable POST unsuccessful. Request Status: " + req.status);
@@ -31,7 +132,7 @@ function buildTable(){
 
 		for (var r in rows) {
 
-			//console.log(rows[r]["id"]);
+			console.log(rows[r]);
 			var newRow = document.createElement("tr");
 
 			for (var c in rows[r]){
@@ -48,30 +149,23 @@ function buildTable(){
 			var editCellFormSubmit = document.createElement("input");
 			editCellFormSubmit.type = "submit";
 			editCellFormSubmit.value="EDIT";
-			editCellFormSubmit.addEventListener('click', generateEdit(rows[r]["id"]));
+			editCellFormSubmit.addEventListener('click', generateEdit(rows[r]["id"], rows[r]["name"], rows[r]["reps"], rows[r]["weight"], rows[r]["date"], rows[r]["lbs"]));
 			editCellForm.appendChild(editCellFormSubmit);
 			editCell.appendChild(editCellForm);
 			newRow.appendChild(editCell);
 
 			// Closure reference: http://classes.engr.oregonstate.edu/eecs/fall2015/cs290-400/content/core-content/js-functions-objects/js-scope-context.html
-			function generateEdit(id){
-				return function(x){
+			function generateEdit(i, n, r, w, d, l){
+				return function(xi, xn, xr, xw, xd, xl){
 					return function(event){
-						console.log("Entry " + x + " edited...");
+						console.log("Entry " + xi + " edited...");
+						console.log("date " + xd);
 
-						// build post data for edit request
-						var postInput= {};
-						postInput.id = x;
-						
-						//https://piazza.com/class/jbu2ol8jlbl3iu?cid=253
-						var req = new XMLHttpRequest();
-						req.open("POST", "/editEntry", true);
-						req.setRequestHeader('Content-Type', 'application/json');
+						addEditForm(xi, xn, xr, xw, xd, xl)
 
-						req.send(JSON.stringify(postInput));
 						event.preventDefault();
 					}
-				}(id);
+				}(i, n, r, w, d, l);
 			}
 
 

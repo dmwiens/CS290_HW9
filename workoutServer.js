@@ -142,8 +142,16 @@ app.post('/deleteEntry', function(req,res,next){
 
 app.post('/editEntry', function(req,res,next){
 
-  console.log("SVR: editing " + req.body["id"]);
-
+  mysql.pool.query("UPDATE workouts SET name=?, reps=?, weight=?, date=?, lbs=? WHERE id=? ",
+    [req.body["name"], req.body["reps"], req.body["weight"], req.body["date"], req.body["lbs"], req.body["id"]],
+    function(err, result){
+    if(err){
+      next(err);
+      return;
+    }
+    console.log("Edit successful");
+    res.status(200).send('OK');
+  });
 });
 
 
