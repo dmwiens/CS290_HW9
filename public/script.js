@@ -10,6 +10,10 @@ function addEditForm(id, name, reps, weight, date, lbs){
 	var editDiv = document.getElementById("editDiv");
 	editDiv.innerHTML = '';
 
+	var newHeader = document.createElement("h1");
+	newHeader.textContent = "Edit Entry";
+	document.getElementById("editDiv").appendChild(newHeader);
+
 	var newForm = document.createElement("form");
 
 	var nameLabel = document.createElement("label");
@@ -21,6 +25,7 @@ function addEditForm(id, name, reps, weight, date, lbs){
 	nameInput.id = "nameInput"
 	nameLabel.appendChild(nameInput);
 	newForm.appendChild(nameLabel);
+	newForm.appendChild(document.createElement("br"))
 
 	var repsLabel = document.createElement("label");
 	repsLabel.textContent = "Reps: "
@@ -30,6 +35,7 @@ function addEditForm(id, name, reps, weight, date, lbs){
 	repsInput.id = "repsInput"
 	repsLabel.appendChild(repsInput);
 	newForm.appendChild(repsLabel);
+	newForm.appendChild(document.createElement("br"))
 
 	var weightLabel = document.createElement("label");
 	weightLabel.textContent = "Weight: "
@@ -39,6 +45,7 @@ function addEditForm(id, name, reps, weight, date, lbs){
 	weightInput.id = "weightInput"
 	weightLabel.appendChild(weightInput);
 	newForm.appendChild(weightLabel);
+	newForm.appendChild(document.createElement("br"))
 
 	var dateLabel = document.createElement("label");
 	dateLabel.textContent = "Date: "
@@ -50,6 +57,7 @@ function addEditForm(id, name, reps, weight, date, lbs){
 	dateInput.id = "dateInput"
 	dateLabel.appendChild(dateInput);
 	newForm.appendChild(dateLabel);
+	newForm.appendChild(document.createElement("br"))
 
 	var lbsLabel = document.createElement("label");
 	lbsLabel.textContent = "lbs: "
@@ -60,6 +68,7 @@ function addEditForm(id, name, reps, weight, date, lbs){
 	lbsInput.id = "lbsInput"
 	lbsLabel.appendChild(lbsInput);
 	newForm.appendChild(lbsLabel);
+	newForm.appendChild(document.createElement("br"))
 
 	var newSubmit = document.createElement("input");
 	newSubmit.type = "submit";
