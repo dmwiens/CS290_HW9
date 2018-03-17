@@ -55,7 +55,8 @@ function addEditForm(id, name, reps, weight, date, lbs){
 	lbsLabel.textContent = "lbs: "
 	var lbsInput = document.createElement("input");
 	lbsInput.type = "checkbox"
-	lbsInput.checkbox = lbs;
+	console.log("lbs is" + lbs)
+	lbsInput.checked = lbs;
 	lbsInput.id = "lbsInput"
 	lbsLabel.appendChild(lbsInput);
 	newForm.appendChild(lbsLabel);
