@@ -147,10 +147,11 @@ function buildTable(){
 
 			for (var c in rows[r]){
 				var newCell = document.createElement("td");
+				//var colID = col + 1;
+				//newCell.id = rowID + "," + colID; // e.g cell 2,3 has id "2,3"
 				newCell.textContent = rows[r][c];
 				newRow.appendChild(newCell);
 			}
-			// aded text
 
 			// Edit button
 			var editCell = document.createElement("td");
